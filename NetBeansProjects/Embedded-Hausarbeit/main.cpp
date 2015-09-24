@@ -30,7 +30,6 @@ using namespace std;
  * werden die aktuellen Werte auf dem Max7219 Display ausgegeben.
  */
 int main(int argc, char** argv) {
-    printf("Git Test");
     float luftfeuchtigkeit,lufttemperatur, wassertemperatur;
     lufttemperatur = 1.0;
     luftfeuchtigkeit = 1.0;
@@ -44,65 +43,51 @@ int main(int argc, char** argv) {
     int altTime;
     bool offenesFenster = false;
     aus = new Ausgabe();
-        dht = new dht22();
-        ds = new DS18B20();
+       
+        
     while(true){
         
-        if(hc->readHCSR501() == 1){
-            printf("Bewegung");
-            while(true){
-                int i = dht->readDHT(17,&lufttemperatur,&luftfeuchtigkeit);
-                if(i == 0 ){
-                    break;
-                }
-                printf("DHT nächster Versuch");
-            }
-            wassertemperatur = ds->getTemp();
-            cout << "Temp: " << lufttemperatur << endl;
-            aus->ausgabeText(lufttemperatur,luftfeuchtigkeit,wassertemperatur);         
-        }
+        
         sek = time(NULL);
         ts = localtime(&sek);
         
-        if(ts->tm_min % 5 == 0 && ts->tm_min!=altTime){
+        if(/*ts->tm_min % 5 == 0 &&*/ ts->tm_min!=altTime){
+            
+             
             altTime = ts->tm_min;
-            while(true){
-                int i = dht->readDHT(17,&lufttemperatur,&luftfeuchtigkeit);
+//            dht = new dht22();
+//            while(dht->readDHT(17,&lufttemperatur,&luftfeuchtigkeit) != 0){sleep(1);}
+//            delete(dht);
+                /*int i = dht->readDHT(17,&lufttemperatur,&luftfeuchtigkeit);
                 if(i == 0 ){
                     break;
                 }
-            }
+            }*/
+            wassertemperatur = 0;
+            ds = new DS18B20();
             wassertemperatur = ds->getTemp();
-            /*printf("Wassertemp: %.1f\n", wassertemperatur);
-            printf("Temperatur: %.2f `C\n",lufttemperatur);
-            printf("Luftfeuchtigkeit: %.1f %\n",luftfeuchtigkeit); */
+            delete(ds);
+            printf("Wassertemp: %.1f\n", wassertemperatur);
+            //printf("Temperatur: %.2f `C\n",lufttemperatur);
+            //printf("Luftfeuchtigkeit: %.1f %\n",luftfeuchtigkeit);
                         
             //aus->ausgabeText(lufttemperatur,luftfeuchtigkeit,wassertemperatur);
             aus->writeCSV(lufttemperatur,luftfeuchtigkeit,wassertemperatur);
-            aus->writeWWW(lufttemperatur,luftfeuchtigkeit,wassertemperatur); 
+//            aus->writeWWW(lufttemperatur,luftfeuchtigkeit,wassertemperatur);
+            printf("Wait 50 Seconds\n");
+            sleep(50);
+            printf("Das Warten hat ein Ende\n");
+            //dht->~dht22();
             
-            /*if(lufttemperatur>30 && !offenesFenster){
-                re->setRelayOn(re->fensterAuf,20);
-                offenesFenster = true;
-            }
-            if(lufttemperatur<23 && offenesFenster){
-                re->setRelayOn(re->fensterZu,20);
-                offenesFenster = false;
-            }*/
-            
-            sleep(1);
             
         }
-        else{usleep(300);}
-        
-        /*if(ts->tm_min == 0 && ts->tm_hour){
-            re->setRelayOn(re->wasserAuf, 60);
-        }*/
-        
-        
+        else{
+            printf("Wait 5 Seconds\n");
+            sleep(5);
+            printf("Das Warten hat ein Ende\n");
+        }
     }
-        dht->~dht22();
-        ds->~DS18B20();
+    
     return 0;
 }
 

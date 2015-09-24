@@ -38,9 +38,9 @@ void Ausgabe::writeCSV(float lufttemperatur, float luftfeuchtigkeit, float wasse
     cout << "CSV-Eintrag: " << csv << endl;
     
     fstream f; 
-    f.open("Gewaechshaus.csv", ios::out|ios::app); 
-    f <<csv;
-    f.close(); 
+    f.open("/home/pi/Biomeiler.csv", ios::out|ios::app); 
+    f << csv;
+    f.close();
 }
 
 void Ausgabe::writeWWW(float lufttemperatur, float luftfeuchtigkeit, float wassertemperatur){

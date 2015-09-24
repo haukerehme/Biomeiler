@@ -16,11 +16,12 @@ dht22::dht22() {
 }
 
 dht22::~dht22() {
-    gw->~gpioWork();
+    delete(gw);
 }
 
 int dht22::readDHT(int pin, float *temperatur, float *luftfeuchtigkeit)
 {
+    printf("readDHT\n");
     int counter = 0;
     int tmpStatus = gw->HIGH;
     int j = 0;
@@ -39,9 +40,8 @@ int dht22::readDHT(int pin, float *temperatur, float *luftfeuchtigkeit)
     //Warten auf dht
     //Read GPIO INPUT
     while (gw->getPinValue(pin) == 1) {
-                //usleep(1);
+        usleep(1);
     }
-    
     // Auslesen der Daten beginnt
     for (int i = 0; i < MaxDurchlaeufe; i++) {
         counter = 0;
